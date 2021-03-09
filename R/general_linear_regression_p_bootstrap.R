@@ -40,7 +40,7 @@ general_linear_regression_p_bootstrap<-function(x,y,n_agg=5,family=gaussian(link
         {   # There is a calling environment issue in the package rsq, if these functions are called from within other functions,
             # the family argument is not always resolved. This is why we copied the rsq.v function of interest, but added a "virtual"
             # family argument that technically doesn't get used directly but in evaluation of the calls.
-             r2[ind_group]=rsq.v.family(linmod,adj=TRUE,family=family)
+             r2[ind_group]=rsq.v.family(linmod,adj=TRUE,family=family,theData=theData)
             #
             
         } else
@@ -93,7 +93,7 @@ general_linear_regression_p_bootstrap<-function(x,y,n_agg=5,family=gaussian(link
 
 
 
-rsq.v.family=function (fitObj, adj = FALSE,family=gaussian(link="identity"))
+rsq.v.family=function (fitObj, adj = FALSE,family=gaussian(link="identity"),theData=NULL)
 {
     if (is(fitObj, "glmerMod")) {
         rsq <- rsq.glmm(fitObj, adj = adj)
