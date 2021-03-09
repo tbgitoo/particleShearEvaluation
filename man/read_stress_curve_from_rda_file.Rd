@@ -1,23 +1,21 @@
-\name{read_stress_curve_from_file}
-\alias{read_stress_curve_from_file}
+\name{read_stress_curve_from_rda_file}
+\alias{read_stress_curve_from_rda_file}
 
 \title{
-read_stress_curve_from_file
+read_stress_curve_from_rda_file
 }
 \description{
-Reads the primary stress curves stored in a text file located at \code{path}
+Reads the primary stress curves stored in a rda file located at \code{path}
 }
 \usage{
-read_stress_curve_from_file(path,data_start_line=-1,time_column="t",strain_column="strain",
-strain_rate_column="strain_rate",shear_stress_measured_at_surface_column="shear_stress_measured_at_surface",
-shear_stress_from_internal_stress_tensor_column="shear_stress_from_internal_stress_tensor")}
+read_stress_curve_from_rda_file(path,time_column="t",strain_column="strain",
+strain_rate_column="strain_rate",shear_stress_measured_at_surface_column="stress_measured_at_surface",
+shear_stress_from_internal_stress_tensor_column="shear_stress_internal_stress.tensor")
 
 \arguments{
   \item{path}{
- Path to the text file
+ Path to the rda
 }
-  \item{data_start_line}{
- If known, provide the first line to read (the column headers; line numbering is assumed to start with 0 in the file); otherwise, provide -1 and an attempt is made to find the first line to read via \link{stress_data_start_line} with default arguments} 
 \item{time_column}{
 Header of the time column; by default, this is \code{"t"}
 }
@@ -47,4 +45,11 @@ Otsuki, M. and H. Hayakawa, Discontinuous change of shear modulus for frictional
 
 \keyword{ misc }
 
-\examples{}
+\examples{
+# This is the same data stored in rda format that is also read from text for read_stress_curve_from_file
+path=system.file("split/stress_full_python_simulation_output_example.rda",package="particleShearEvaluation")
+stress_curve=read_stress_curve_from_rda_file(path)
+plot(strain ~ t, stress_curve,type="l",xlab="t[s]",ylab="strain [-], stress[kPa]")
+lines(stress_curve$t, stress_curve$shear_stress_from_internal_stress_tensor/1000,type="l",col="red")
+legend("bottomleft",legend=c("strain","stress"),lty=c(1,1),col=c("black","red"))
+}
