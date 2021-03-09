@@ -75,7 +75,7 @@ legend("topleft",legend=c("internal torque correction","Love-Weber"),lty=c(1,1),
 # The relevant shear stress for evaluation is the column stress_tensor_data$shear_stress_internal_stress.tensor
 # This is also  -(stress_tensor_data$stress_tensor_internal_tangential_torque_01+stress_tensor_data$stress_tensor_Love_Weber_01), or equivalently 
 # -(stress_tensor_data$stress_tensor_internal_tangential_torque_10+stress_tensor_data$stress_tensor_Love_Weber_10) 
-plot(stress_tensor_data$t,stress_tensor_data$shear_stress_internal_stress.tensor,type="l",ylab="Shear stress [Pa]", xlab="Time[t]")
+plot(stress_tensor_data$t,stress_tensor_data$shear_stress_internal_stress.tensor,type="l",ylab="Shear stress [Pa]", xlab="Time[s]")
 
 
 }
