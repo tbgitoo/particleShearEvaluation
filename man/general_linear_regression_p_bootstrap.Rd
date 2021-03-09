@@ -63,67 +63,26 @@ Thomas Braschler
 
 # Example 1: usage
 x=c(0,1,2,3)
+
+# With a known effect
 y=matrix(nrow=length(x),ncol=500,data=x)
 y=y+matrix(nrow=dim(y)[1], ncol=dim(y)[2], data=rnorm(dim(y)[1]*dim(y)[2]))
-
-
 general_linear_regression_p_bootstrap(x,y,n_agg=5)
 
-rsq.v.family=function (fitObj, adj = FALSE,glm.family=gaussian(link="identity")) 
-{
-    if (is(fitObj, "glmerMod")) {
-        rsq <- rsq.glmm(fitObj, adj = adj)
-    }
-    else if (is(fitObj, "glm")) {
-        y <- fitObj$y
-        wt <- weights(fitObj)
-        if (is.null(wt)) 
-            wt <- y * 0 + 1
-        n <- sum(wt)
-        if (is.null(y)) 
-            stop("The glm object does not include response values!")
-        yfit <- fitObj$fitted.values
-        if (pmatch("Negative Binomial", family(fitObj)$family, 
-            nomatch = F)) {
-            theta <- ifelse(is.null(fitObj$theta), as.numeric(gsub("(?<=\\()[^()]*(?=\\))(*SKIP)(*F)|.", 
-                "", family(fitObj)$family, perl = T)), fitObj$theta)
-            sse1 <- sum(wt * vresidual(y, yfit, family = negative.binomial(theta))^2)
-            f0 <- glm(y ~ 1, family = negative.binomial(theta))
-            yf0 <- f0$fitted.values
-            sse0 <- sum(wt * vresidual(y, yf0, family = negative.binomial(theta))^2)
-        }
-        else if (family(fitObj)$family == "binomial") {
-            nSuc <- wt * y
-            nFai <- wt - nSuc
-            tone <- rep(1, length(nSuc))
-            sse1 <- sum(nSuc * vresidual(tone, yfit, family = family(fitObj))^2) + 
-                sum(nFai * vresidual(1 - tone, yfit, family = family(fitObj))^2)
-            f0 <- update(fitObj, . ~ 1)
-            yf0 <- f0$fitted.values
-            sse0 <- sum(nSuc * vresidual(tone, yf0, family = family(f0))^2) + 
-                sum(nFai * vresidual(1 - tone, yf0, family = family(f0))^2)
-        }
-        else {
-            sse1 <- sum(wt * vresidual(y, yfit, family = family(fitObj))^2)
-            f0 <- update(fitObj, . ~ 1)
-            sse0 <- sum(wt * vresidual(y, f0$fitted.values, family = family(f0))^2)
-        }
-        pM <- fitObj$df.null - fitObj$df.residual + 1
-        rsq <- 1 - (sse1/sse0) * ifelse(adj, (n - 1)/(n - pM), 
-            1)
-    }
-    rsq
-}
+# Random effect only
+y=matrix(nrow=dim(y)[1], ncol=dim(y)[2], data=rnorm(dim(y)[1]*dim(y)[2]))
+general_linear_regression_p_bootstrap(x,y,n_agg=5)
 
 
-
-
-# Example 1: 
+# Example 2: 
 # =======================================================================================================================
 
-# Use here a simplified Arrhenius model for illustration, n_agg =5, 6 different temperatures
+# Use of a more reality-inspired scenario: The problem of evaluation of outcomes from an averaged curve.
+# This is inspired from an Arrhenius-type equation, we use here the temperature at half-maximal reaction rate for
+# assessing catalyst activity (assuming Arrhenius-type saturation at higher temperature).
+
 # T is the known temperature, in Kelvin; T0 the activation energy in temperature equivalents
-# T0 depends on the addition of some catalyst, this is our x
+# Let's assume T0 depends on the addition of some catalyst, this is our x. Let's have the dependency quite extreme
 x=c(0,3,6) # Concentrations catalyst
 T0=exp(x) # Let's say, this is an exponential dependency
 T=c(1,3,10,30,100,300,1000) # Known temperatures
@@ -253,9 +212,19 @@ general_linear_regression_p_bootstrap(x,y,n_agg=n_agg,family=quasi(link = "log",
 
 
 
-# Example 2: Power (1-beta) and false-positives (alpha) analysis in the setting of example 1
+# Example 3: Power (1-beta) and false-positives (alpha) analysis in the setting of example 1
 # Basic settings as in example 1
 # as before, to get the temperature estimates at half-maximum rate empirically
+
+# This example takes a very long time to execute (15' ), typical results are:                             
+# False positive rates (alpha) under the hypothesis of random fluctations only: 
+#     => a few percent (generally compatible with alpha <= 0.05) for all three evaluation methods (simple linear model, simple glm model, and glm bootstrapping via 
+#		general_linear_regression_p_bootstrap  
+#     => Power (true positives, under the hypothetical true effect detailed in the example: Very low for simple linear regression (typically, a few percent); moderately low for
+#                a simple glm (on the order of 0.3-0.4); and moderately high (0.85-0.95) for  the bootstrapping approach
+# For the particular case in this example, we therefore conclude that the bootstrapping approach is the most powerful by a substantial margin, without undue inflation of 
+# type I (false negatives) errors
+
 \dontrun{
 
 estimate_half_temperature_at_half_maximal_rate<-function(v)
@@ -374,15 +343,16 @@ return(pvals)
 
 
 # First, the case with a known effect
-x=c(0,3,6) # Concentrations catalyst
+x=c(0,2,4) # Concentrations catalyst
 T0=exp(x) # Let's say, this is an exponential dependency
 T=c(1,3,10,30,100,300,1000) # Known temperatures
 N_per_condition=15
+N_simulation=100
 
 
 pfirst=get_p_value_estimate(x,T0,T,N_per_condition)
 
-p_matrix=matrix(ncol=length(pfirst),nrow=100)
+p_matrix=matrix(ncol=length(pfirst),nrow=N_simulation)
 
 p_matrix[1,]=pfirst
 
@@ -407,15 +377,12 @@ for(theApproach in names(power))
 
 
 # Second, false positives
-x=c(0,3,6) # Concentrations catalyst
 T0=exp(0*x) # No effect of the catalyst
-T=c(1,3,10,30,100,300,1000) # Known temperatures
-N_per_condition=15
 
 
 pfirst=get_p_value_estimate(x,T0,T,N_per_condition)
 
-p_matrix_control=matrix(ncol=length(pfirst),nrow=100)
+p_matrix_control=matrix(ncol=length(pfirst),nrow=N_simulation)
 
 p_matrix_control[1,]=pfirst
 
@@ -438,9 +405,16 @@ for(theApproach in names(false_positives))
 	false_positives[theApproach]=sum(current_data<=0.05)/(length(current_data))
 }
 
+for_barplot=matrix(nrow=2,ncol=length(false_positives),data=c(false_positives, power),byrow=TRUE)
 
+rownames(for_barplot)=c("False positives (alpha)", "True positives (1-beta, power)")
+colnames(for_barplot)=names(false_positives)
+
+barplot(for_barplot,beside=TRUE,legend=TRUE)
 
 }
+
+
 
 
 

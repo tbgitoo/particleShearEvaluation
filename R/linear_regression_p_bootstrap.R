@@ -19,7 +19,16 @@ linear_regression_p_bootstrap<-function(x,y,n_agg=5)
         }
         
         linmod=lm(y~x,theData)
-        p_shapiro[ind_group]=shapiro.test(resid(linmod))[["p.value"]]
+        residuals=resid(linmod)
+        if(length(unique(residuals[!is.na(residuals)]))==1) # Shapiro gives an error when all values are identical. Report 1 in this case
+        {
+            p_shapiro[ind_group]=1
+        } else {
+            p_shapiro[ind_group]=shapiro.test(resid(linmod))[["p.value"]]
+        }
+        
+        
+        
         s=summary(linmod)
         t[ind_group]=coefficients(s)["x","t value"]
         df[ind_group]=s[["df"]][2]

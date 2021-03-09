@@ -37,5 +37,20 @@ From each run of linear regression, an F statistics and degrees of freedom of th
 Thomas Braschler
 }
 
+\examples{
+# Example 1: usage
+x=c(0,1,2,3)
+
+# With a known effect
+y=matrix(nrow=length(x),ncol=500,data=x)
+y=y+matrix(nrow=dim(y)[1], ncol=dim(y)[2], data=rnorm(dim(y)[1]*dim(y)[2]))
+linear_regression_p_bootstrap(x,y,n_agg=5)
+
+# Random effect only
+y=matrix(nrow=dim(y)[1], ncol=dim(y)[2], data=rnorm(dim(y)[1]*dim(y)[2]))
+linear_regression_p_bootstrap(x,y,n_agg=5)
+
+}
+
 \keyword{ misc }
 
