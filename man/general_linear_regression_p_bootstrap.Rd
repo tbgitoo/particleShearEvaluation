@@ -213,6 +213,7 @@ general_linear_regression_p_bootstrap(x,y,n_agg=n_agg,family=quasi(link = "log",
 
 
 # Example 3: Power (1-beta) and false-positives (alpha) analysis in the setting of example 1
+# ====================================================================
 # Basic settings as in example 1
 # as before, to get the temperature estimates at half-maximum rate empirically
 

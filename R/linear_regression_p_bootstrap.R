@@ -1,4 +1,4 @@
-linear_regression_p_bootstrap<-function(x,y,n_agg=5)
+linear_regression_p_bootstrap<-function(x,y,n_agg=5,na.rm=FALSE)
 {
     
     N=floor((dim(y)[2])/n_agg)
@@ -47,13 +47,13 @@ linear_regression_p_bootstrap<-function(x,y,n_agg=5)
     # are uniformly distributed we can get p=0.5 on average; if there is a systematic contribution,
     # then this will lead to a true averaging around the bias.
     
-    z_shapiro = mean(qnorm(p_shapiro))
+    z_shapiro = mean(qnorm(p_shapiro),na.rm=na.rm)
     
     
-    attr(return_val,"F")=mean(t^2)
+    attr(return_val,"F")=mean(t^2,na.rm=na.rm)
     attr(return_val,"DF1")=1
-    attr(return_val,"DF2")=mean(df)
-    attr(return_val,"adj.r.squared")=mean(r2)
+    attr(return_val,"DF2")=mean(df,na.rm=na.rm)
+    attr(return_val,"adj.r.squared")=mean(r2,na.rm=na.rm)
     attr(return_val,"p_shapiro")=pnorm(z_shapiro)
     attr(return_val,"confint")=c("2.5 %"=quantile(estimate,probs=c(0.025))[["2.5%"]]
     ,"97.5 %"=quantile(estimate,probs=c(0.975))[["97.5%"]])
