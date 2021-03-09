@@ -1,6 +1,6 @@
 Package: particleShearEvaluation
 Type: Package
-Title: Utility functions for elementary analysis and plots of cell counts under different conditions
+Title: Import and analysis of output files from the python simulation particleShear
 Version: 1.0
 Date: 2018-10-17
 Author: Thomas Braschler
