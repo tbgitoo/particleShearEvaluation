@@ -8,7 +8,7 @@ general_linear_regression_p_bootstrap
 Evaluation of a bootstrapped (resampled) dataset with a \link{glm} model to obtain a p-value.
 }
 \usage{
-general_linear_regression_p_bootstrap(x,y,n_agg=5,family=gaussian(link = "identity"),...)
+general_linear_regression_p_bootstrap(x,y,n_agg=5,na.rm=FALSE,...)
 }
 
 \arguments{
@@ -23,6 +23,10 @@ Vector with numerical values associated with experimental conditions (regressor)
   \item{family}{
 Family argument for the \link{glm} model, see also \link{family}
 }
+  \item{na.rm}{
+In random resampling, it may happen that non-evaluatable samples are generated (all values identical, for example). Although generally rare, in large bootstrapping studies, it may be advantages to  pass \code{na.rm=TRUE} so that these rare samples are not taken into account.
+}
+
 
 \item{...}{Additional parameters to be passed to \link{glm}}
 }
@@ -55,6 +59,64 @@ Thomas Braschler
 \keyword{ misc }
 
 \examples{
+
+
+# Example 1: usage
+x=c(0,1,2,3)
+y=matrix(nrow=length(x),ncol=500,data=x)
+y=y+matrix(nrow=dim(y)[1], ncol=dim(y)[2], data=rnorm(dim(y)[1]*dim(y)[2]))
+
+
+general_linear_regression_p_bootstrap(x,y,n_agg=5)
+
+rsq.v.family=function (fitObj, adj = FALSE,glm.family=gaussian(link="identity")) 
+{
+    if (is(fitObj, "glmerMod")) {
+        rsq <- rsq.glmm(fitObj, adj = adj)
+    }
+    else if (is(fitObj, "glm")) {
+        y <- fitObj$y
+        wt <- weights(fitObj)
+        if (is.null(wt)) 
+            wt <- y * 0 + 1
+        n <- sum(wt)
+        if (is.null(y)) 
+            stop("The glm object does not include response values!")
+        yfit <- fitObj$fitted.values
+        if (pmatch("Negative Binomial", family(fitObj)$family, 
+            nomatch = F)) {
+            theta <- ifelse(is.null(fitObj$theta), as.numeric(gsub("(?<=\\()[^()]*(?=\\))(*SKIP)(*F)|.", 
+                "", family(fitObj)$family, perl = T)), fitObj$theta)
+            sse1 <- sum(wt * vresidual(y, yfit, family = negative.binomial(theta))^2)
+            f0 <- glm(y ~ 1, family = negative.binomial(theta))
+            yf0 <- f0$fitted.values
+            sse0 <- sum(wt * vresidual(y, yf0, family = negative.binomial(theta))^2)
+        }
+        else if (family(fitObj)$family == "binomial") {
+            nSuc <- wt * y
+            nFai <- wt - nSuc
+            tone <- rep(1, length(nSuc))
+            sse1 <- sum(nSuc * vresidual(tone, yfit, family = family(fitObj))^2) + 
+                sum(nFai * vresidual(1 - tone, yfit, family = family(fitObj))^2)
+            f0 <- update(fitObj, . ~ 1)
+            yf0 <- f0$fitted.values
+            sse0 <- sum(nSuc * vresidual(tone, yf0, family = family(f0))^2) + 
+                sum(nFai * vresidual(1 - tone, yf0, family = family(f0))^2)
+        }
+        else {
+            sse1 <- sum(wt * vresidual(y, yfit, family = family(fitObj))^2)
+            f0 <- update(fitObj, . ~ 1)
+            sse0 <- sum(wt * vresidual(y, f0$fitted.values, family = family(f0))^2)
+        }
+        pM <- fitObj$df.null - fitObj$df.residual + 1
+        rsq <- 1 - (sse1/sse0) * ifelse(adj, (n - 1)/(n - pM), 
+            1)
+    }
+    rsq
+}
+
+
+
 
 # Example 1: 
 # =======================================================================================================================
@@ -90,9 +152,9 @@ for(ind_x in 2:length(x))
 
 # For the evaluation, let's first evaluate things globally. Let's say we are interested in knowing for each catalyst concentration x the temperature where the reaction rate is half-maximal. We estimate the maximum reaction rate at the highest temperature:
 
-v_max = aggregate ( measured_reaction_rate ~ x, measured[measured$T==max(measured$T),],FUN=median)
+v_max = aggregate ( measured_reaction_rate ~ x, measured[measured$T==max(measured$T),],FUN=median,na.rm=TRUE)
 # General aggregation per x and T
-v = aggregate(measured_reaction_rate ~ x+T,measured,FUN=median)
+v = aggregate(measured_reaction_rate ~ x+T,measured,FUN=median,na.rm=TRUE)
 for(ind_x in 1:length(x))
 {
 	lines(measured_reaction_rate ~ T, v[v$x==x[ind_x],],col=palette()[ind_x],type="l")	
@@ -254,9 +316,9 @@ for(ind_x in 1:length(x))
 
 # For the evaluation, let's first evaluate things globally. Let's say we are interested in knowing for each catalyst concentration x the temperature where the reaction rate is half-maximal. We estimate the maximum reaction rate at the highest temperature:
 
-v_max = aggregate ( measured_reaction_rate ~ x, measured[measured$T==max(measured$T),],FUN=median)
+v_max = aggregate ( measured_reaction_rate ~ x, measured[measured$T==max(measured$T),],FUN=median,na.rm=TRUE)
 # General aggregation per x and T
-v = aggregate(measured_reaction_rate ~ x+T,measured,FUN=median)
+v = aggregate(measured_reaction_rate ~ x+T,measured,FUN=median,na.rm=TRUE)
 
 
 
@@ -294,7 +356,7 @@ for(ind_x in 1:length(x))
 	}
 }
 
-v_subsampled=aggregate(measured_reaction_rate ~ x+T,measured_subsampled,FUN=median)
+v_subsampled=aggregate(measured_reaction_rate ~ x+T,measured_subsampled,FUN=median,na.rm=TRUE)
 
 half_temperature_estimate=estimate_half_temperature_at_half_maximal_rate(v_subsampled)
 
@@ -304,7 +366,7 @@ y[match(half_temperature_estimate$x,x),ind_bootstrap]=half_temperature_estimate$
 
 # x is now the regressor values (catalyst concentrations) as wanted
 
-pvals["glm bootstrapping"]=general_linear_regression_p_bootstrap(x,y,n_agg=n_agg,family=quasi(link = "log", variance = "mu"))
+pvals["glm bootstrapping"]=general_linear_regression_p_bootstrap(x,y,n_agg=n_agg,family=quasi(link = "log", variance = "mu"),na.rm=TRUE)
 
 return(pvals)
 
@@ -338,8 +400,11 @@ for(ind in 2:(dim(p_matrix)[1]))
 power=pfirst
 for(theApproach in names(power))
 {
-	power[theApproach]=sum(p_matrix[,theApproach]<=0.05)/(dim(p_matrix)[1])
+	current_data=p_matrix[,theApproach]
+	current_data=current_data[!is.na(current_data)]
+	power[theApproach]=sum(current_data<=0.05)/(length(current_data))
 }
+
 
 # Second, false positives
 x=c(0,3,6) # Concentrations catalyst
@@ -368,7 +433,9 @@ for(ind in 2:(dim(p_matrix_control)[1]))
 false_positives=pfirst
 for(theApproach in names(false_positives))
 {
-	false_positives[theApproach]=sum(p_matrix_control[,theApproach]<=0.05)/(dim(p_matrix_control)[1])
+	current_data=p_matrix_control[,theApproach]
+	current_data=current_data[!is.na(current_data)]
+	false_positives[theApproach]=sum(current_data<=0.05)/(length(current_data))
 }
 
 
