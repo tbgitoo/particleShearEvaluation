@@ -46,3 +46,10 @@ Otsuki, M. and H. Hayakawa, Discontinuous change of shear modulus for frictional
 }
 
 \keyword{ misc }
+
+\examples{
+stress_curve=read_stress_curve_from_file(system.file("full_python_simulation_output_example.txt",package="particleShearEvaluation"))
+plot(strain ~ t, stress_curve,type="l",xlab="t[s]",ylab="strain [-], stress[kPa]")
+lines(stress_curve$t, stress_curve$shear_stress_from_internal_stress_tensor/1000,type="l",col="red")
+legend("bottomleft",legend=c("strain","stress"),lty=c(1,1),col=c("black","red"))
+}

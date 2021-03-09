@@ -26,3 +26,9 @@ Thomas Braschler
 
 \keyword{ misc }
 
+\examples{
+general_data=read_general_data_from_file(system.file("full_python_simulation_output_example.txt",package="particleShearEvaluation"))
+general_data[71:78]
+
+}
+

@@ -35,3 +35,9 @@ Thomas Braschler
 }
 
 \keyword{ misc }
+
+\examples{
+\dontrun{
+split_tensor_and_overview_data(origin_root=system.file("",package="particleShearEvaluation"),path="","full_python_simulation_output_example.txt")
+}
+}

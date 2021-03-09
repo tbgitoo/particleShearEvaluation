@@ -8,7 +8,7 @@ linear_regression_p_bootstrap
 Uses pre-generated bootstrapping matrices for evaluating relations between variables by linear regression
 }
 \usage{
-linear_regression_p_bootstrap(x,y,n_agg=5)
+linear_regression_p_bootstrap(x,y,n_agg=5,na.rm=FALSE)
 }
 
 \arguments{
@@ -19,6 +19,9 @@ Independent variable for the linear regression; this should be a vector.
 Bootstrapping data. This is a matrix with as many rows as there are elements in \code{x}, and a possible very large number of columns where the number of columns should be multiple of \code{n_agg}, otherwise the last columns are ignored such as to achieve a number of columns which is a multiple of \code{n_agg}. 
 }
 \item{n_agg}{Number of columns in \code{y} that should be used together to generate a dataset to be used for the linear model (i.e. passed to \link{lm}).}
+  \item{na.rm}{
+In random resampling, it may happen that non-evaluatable samples are generated (all values identical, for example). Although generally rare, in large bootstrapping studies, it may be advantages to  pass \code{na.rm=TRUE} so that these rare samples are not taken into account.
+}
 }
 \details{
 This function assembles datasets for linear regression, calls \link{lm} for carrying out the linear regression, and returns statistical data averaged over the different runs. This is typically useful to analyze bootstrapping data, where many data sets are drawn from an original, larger dataset. \cr\cr
