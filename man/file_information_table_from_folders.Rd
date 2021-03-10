@@ -15,7 +15,7 @@ For each element in \code{paths}, this function invokes \link{file_information_t
 }
 
 \arguments{
-  \item{path}{
+  \item{paths}{
   Vector of folder paths
 }
   \item{min_file_size}{

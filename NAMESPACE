@@ -25,4 +25,6 @@ importFrom("stats", "approx", "coefficients", "gaussian", "glm", "lm",
              "pf", "pnorm", "qnorm", "quantile", "resid", "shapiro.test",
              "update", "weights")
 importFrom("utils", "read.table")
+importFrom("rsq", "rsq.glmm", "vresidual")
+importFrom("MASS", "negative.binomial")
 

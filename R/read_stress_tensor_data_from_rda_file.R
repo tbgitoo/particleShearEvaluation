@@ -1,9 +1,9 @@
 read_stress_tensor_data_from_rda_file<-function(path)
 {
+    envir=new.env()
+    load(file=path,envir=envir)
     
-    load(file=path,envir=sys.frame())
-    
-    return(stress_data)
+    return(envir$stress_data)
         
     
     

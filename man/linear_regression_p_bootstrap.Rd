@@ -15,7 +15,7 @@ linear_regression_p_bootstrap(x,y,n_agg=5,na.rm=FALSE)
   \item{x}{
 Independent variable for the linear regression; this should be a vector.
 }
-  \item{n}{
+  \item{y}{
 Bootstrapping data. This is a matrix with as many rows as there are elements in \code{x}, and a possible very large number of columns where the number of columns should be multiple of \code{n_agg}, otherwise the last columns are ignored such as to achieve a number of columns which is a multiple of \code{n_agg}. 
 }
 \item{n_agg}{Number of columns in \code{y} that should be used together to generate a dataset to be used for the linear model (i.e. passed to \link{lm}).}

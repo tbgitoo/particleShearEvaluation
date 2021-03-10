@@ -8,7 +8,7 @@ general_linear_regression_p_bootstrap
 Evaluation of a bootstrapped (resampled) dataset with a \link{glm} model to obtain a p-value.
 }
 \usage{
-general_linear_regression_p_bootstrap(x,y,n_agg=5,na.rm=FALSE,...)
+general_linear_regression_p_bootstrap(x,y,n_agg=5,family=gaussian(link="identity"),na.rm=FALSE,...)
 }
 
 \arguments{

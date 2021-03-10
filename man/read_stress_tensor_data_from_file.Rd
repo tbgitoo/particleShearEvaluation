@@ -8,7 +8,9 @@ read_stress_tensor_data_from_file
 Reads the stress tensor data in the file located at \code{path}
 }
 \usage{
-read_stress_tensor_data_from_file(path,data_start_line=-1)}
+read_stress_tensor_data_from_file(path,data_start_line=-1,time_column="t",strain_column="strain",
+strain_rate_column="strain_rate",shear_stress_measured_at_surface_column="stress_measured_at_surface",
+shear_stress_from_internal_stress_tensor_column="shear_stress_internal_stress.tensor")}
 
 \arguments{
   \item{path}{
@@ -16,6 +18,25 @@ read_stress_tensor_data_from_file(path,data_start_line=-1)}
 }
   \item{data_start_line}{
  If known, provide the first line to read (the column headers; line numbering is assumed to start with 0 in the file); otherwise, provide -1 and an attempt is made to find the first line to read via \link{stress_data_start_line} with default arguments} 
+ \item{time_column}{
+Header of the time column; by default, this is \code{"t"}
+}
+\item{strain_column}{
+Header of the strain column; by default, this is \code{"strain"}
+}
+\item{strain_rate_column}{
+Header of the strain rate column; by default, this is \code{"strain_rate"}
+}
+\item{shear_stress_measured_at_surface_column}{
+Header of the stress column, as measured by force per unit of surface area at the boundaries where 
+shear force is applied. The stress as measured at the surface most closely emulates what will be measured in a rheometer}
+\item{shear_stress_from_internal_stress_tensor_column}{
+Header of the interal stress column; the internal stress is a volume-averaged shear stress corrected for 
+inertial effects, see eq. 15 in Otsuki et al. }
+
+ 
+ 
+ 
 }
 \details{This function returns a plain dataframe, where the components of the various stress tensor are 
 encoded in separate columns. For their meaning, see the particleShear python package.}
@@ -80,8 +101,9 @@ plot(stress_tensor_data$t,stress_tensor_data$shear_stress_internal_stress.tensor
 
 }
 
-\references{Love, A. E. H. A Treatise on the Mathematical Theory of Elasticity.  (Cambridge University Press, 1927).\cr   
-Weber, J. Recherches concernant les contraintes intergranulaires dans les milieux pulvérulents. Bull. Liaison P. et Ch.20, 1-20 (1966).\cr
-Otsuki, M. & Hayakawa, H. Discontinuous change of shear modulus for frictional jammed granular materials. Phys Rev E95, 062902 \cr
-Nicot, F., Hadda, N., Guessasma, M., Fortin, J. & Millet, O. On the definition of the stress tensor in granular media. Int J Solids Struct50, 2508-2517, doi:10.1016/j.ijsolstr.2013.04.001 (2013).
+\references{Love, A.E. H. A Treatise on the Mathematical Theory of Elasticitiy. Cambridge University Press, 1927.\cr
+Weber, J. Recherches concernant les contraintes intergranulaires dans les milieux pulvrulents. Bull. Liaison P. et Ch 20, 1-20, 1966. \cr
+Otsuki, M. and Hayakawa, H. Discontinuous change of shear modulus for frictional jammed granular materials. Phys Rev E95, 062902 \cr
+Nicot, F., Hadda, N., Guessasma, M., Fortin, J. and Millet, O. On the definition of the stress tensor in granular media. Int J Solids Struct, 50, 2508-2517, doi: 10.1016/j.ijsolstr.2013.04.001
 }
+

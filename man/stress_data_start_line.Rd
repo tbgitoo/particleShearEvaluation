@@ -8,7 +8,7 @@ stress_data_start_line
 Finds the line where the stress data starts in the file identified by \code{path}
 }
 \usage{
-stress_data_start_line(path,data_header_pattern="Detailed force and stress data",n_header=200)
+stress_data_start_line(path,data_header_pattern="Detailed[a-zA-Z0-9\\\\s].*data",n_header=200)
 }
 
 \arguments{

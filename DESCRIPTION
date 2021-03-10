@@ -5,7 +5,7 @@ Version: 1.0
 Date: 2018-10-17
 Author: Thomas Braschler
 Maintainer: Thomas Braschler <thomas.braschler@gmail.com>
-Description: Reading and analyzing data files produced by the particleShearSimulation Python library
-License: GPL-3 | file LICENCE
-Depends: rsq, R (>= 3.5.0)
+Description: This R package allows reading and analyzing data files produced by the particleShearSimulation Python library.
+License: GPL-3 + file LICENSE
+Depends: rsq, R (>= 3.5.0), methods, MASS
 LazyLoad: yes

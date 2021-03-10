@@ -35,7 +35,7 @@ stress_tensor_data=read_stress_tensor_data_from_rda_file(path)
 }
 
 \references{Love, A. E. H. A Treatise on the Mathematical Theory of Elasticity.  (Cambridge University Press, 1927).\cr   
-Weber, J. Recherches concernant les contraintes intergranulaires dans les milieux pulvérulents. Bull. Liaison P. et Ch.20, 1-20 (1966).\cr
+Weber, J. Recherches concernant les contraintes intergranulaires dans les milieux pulvurulents. Bull. Liaison P. et Ch.20, 1-20 (1966).\cr
 Otsuki, M. & Hayakawa, H. Discontinuous change of shear modulus for frictional jammed granular materials. Phys Rev E95, 062902 \cr
 Nicot, F., Hadda, N., Guessasma, M., Fortin, J. & Millet, O. On the definition of the stress tensor in granular media. Int J Solids Struct50, 2508-2517, doi:10.1016/j.ijsolstr.2013.04.001 (2013).
 }
