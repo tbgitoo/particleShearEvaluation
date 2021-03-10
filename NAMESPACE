@@ -18,4 +18,11 @@ export("find_info_from_text",
     "get_yield_point",
     "linear_regression_p_bootstrap",
     "general_linear_regression_p_bootstrap")
+    
+importFrom("graphics", "lines")
+importFrom("methods", "is")
+importFrom("stats", "approx", "coefficients", "gaussian", "glm", "lm",
+             "pf", "pnorm", "qnorm", "quantile", "resid", "shapiro.test",
+             "update", "weights")
+importFrom("utils", "read.table")
 

@@ -11,6 +11,7 @@ Reads the primary stress curves stored in a rda file located at \code{path}
 read_stress_curve_from_rda_file(path,time_column="t",strain_column="strain",
 strain_rate_column="strain_rate",shear_stress_measured_at_surface_column="stress_measured_at_surface",
 shear_stress_from_internal_stress_tensor_column="shear_stress_internal_stress.tensor")
+}
 
 \arguments{
   \item{path}{

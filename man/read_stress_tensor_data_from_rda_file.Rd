@@ -9,7 +9,7 @@ Reads the stress tensor data in the file located at \code{path}
 }
 \usage{
 read_stress_tensor_data_from_rda_file(path)
-
+}
 \arguments{
   \item{path}{
  Path to the rda file
